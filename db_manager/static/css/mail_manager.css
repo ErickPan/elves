@@ -1,0 +1,49 @@
+.nav-flex {
+    display: flex;
+    align-items: center;
+}
+.nav-content {
+    width: 1140px;
+}
+.input-form {
+    width: 100%;
+    padding: 50px;
+}
+.navbar-left .condit-query {
+    display: block;
+    position: relative;
+    margin: 0 30px 25px 0;
+}
+.field-dsp {
+    display: inline-block;
+    width: 100px;
+}
+.l-top {
+    vertical-align: top;
+}
+.drop-box {
+    display: inline-block;
+}
+.drop-active {
+    background-color: #f5f5f5;
+}
+.search-box {
+    position: relative;
+    display: inline-block;
+}
+.c-label {
+    margin-left: 40px;
+}
+.result-lis {
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 34px;
+}
+.condit-query .mail-remarks {
+    width: 80%;
+}
+.submit-btn {
+    display: block;
+    margin: 0 auto;
+}

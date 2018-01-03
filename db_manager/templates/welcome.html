@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+    <style type="text/css">
+    .container{
+            height:auto;/*这里可以定个值*/
+            width:100%;
+            margin: 0 auto;
+        }
+        .nav{
+            height:100px;
+            width:100%;
+            background:	#7AFEC6;
+            margin:0 auto;
+            text-align:center; /*水平居中*/
+            line-height: 100px;
+        }
+        .content{
+            height:400px;
+            width:100%;
+            line-height: 200px;
+            background:white;
+            position:relative;
+        }
+        .foot{
+            position:fixed;
+            height:100px;
+            width:100%;
+            bottom:0px;
+            background:gray;
+            padding-left: 100px;
+        }
+        .func a{
+            display:inline-block;
+            text-align:center;
+            line-height:100px;
+            width:200px;
+            height:100px;
+            background:orange;
+            margin-right:50px;
+            border:2px solid;
+            border-radius:25px;
+        }
+        .func{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform:translate3d(-50%,-50%,0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <p>欢迎使用数据库管理平台</p>
+        </div>
+        <div class="content">
+            <div class="func">
+                <a href="http://172.16.21.212:8000/partition_manager/" target="view_window">分区管理</a>
+                <a href="http://172.16.21.212:8000/mail_manager/" target="view_window">邮件申请</a>
+                <a href="http://172.16.21.212:8000/inception/" target="view_window">表结构审核</a>
+                <a href="#">待开发</a>
+            </div>
+        </div>
+        <div class="foot">
+            <p>底部</p>
+        </div>
+    </div>
+</body>
+</html>

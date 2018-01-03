@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sql检测</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/css/common.css"/>
+    <link rel="stylesheet" href="/static/css/inception.css"/>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            <p class="navbar-brand" >SQL</p>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-4">
+            <p class="navbar-text">sql语句语法错误检测</p>
+            </div>
+        </div>
+    </nav>
+    <section class="container" >
+        <form class="navbar-form navbar-left input-form">
+            <div id="server-name" class="form-group condit-query">
+            </div>
+            <div id="schema-name" class="form-group condit-query">
+            </div>
+            </div>
+            <div id="exec-content" class="form-group condit-query">
+            </div>
+            <button class="btn btn-default submit-btn" type="button">检测</button>
+        </form>
+        <div class="panel panel-default panel-wrapper">
+          <div class="panel-body error-message">
+            Basic panel example
+          </div>
+        </div>
+    </section>
+</body>
+<script src="/static/js/lib/jquery.min.js"></script>
+<script src="/static/js/lib/bootstrap.js" ></script>
+<script src="/static/js/lib/common.js" ></script>
+<script>
+    var server_name_list = {{ server_name_list|safe }};
+</script>
+<script src="/static/js/lib/inception.js" ></script>
+
+</html>

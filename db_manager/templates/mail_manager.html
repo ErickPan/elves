@@ -1,0 +1,57 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件申请</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/mail_manager.css" />
+</head>
+<body>
+    <nav class="navbar navbar-default nav-flex">
+        <div class="container-fluid nav-content">
+            <ul class="nav nav-pills nav-lis">
+                <li class="tab-item" role="presentation" class="active"><a href="#sql-apply">SQL申请</a></li>
+                <li class="tab-item" role="presentation"><a href="#privilege-apply">权限申请</a></li>
+                <li class="tab-item" role="presentation"><a href="#migration-apply">migration申请</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="container">
+        <form class="navbar-form navbar-left input-form">
+            <div id="server-name" class="form-group condit-query">
+            </div>
+            <div id="schema-name" class="form-group condit-query">
+            </div>
+            <div id="sql-type" class="form-group condit-query active-group" style="display:none;">
+            </div>
+            <div id="sql-privilege" class="form-group condit-query active-group" style="display:none;">
+            </div>
+            <div id="sql-migration" class="form-group condit-query active-group" style="display:none;">
+            </div>
+            <div id="addressee" class="form-group condit-query">
+            </div>
+            <div id="cc-list" class="form-group condit-query">
+            </div>
+            <div id="effect-line" class="form-group condit-query active-group" style="display:none;">
+
+            </div>
+            <div id="sql-version" class="form-group condit-query active-group" style="display:none;">
+
+            </div>
+            <div id="remarks" class="form-group condit-query">
+            </div>
+            <button class="btn btn-default submit-btn" type="button">去发送邮件</button>
+        </form>
+    </section>
+</body>
+<script src="/static/js/lib/jquery.min.js"></script>
+<script src="/static/js/lib/bootstrap.js" ></script>
+<script src="/static/js/lib/common.js" ></script>
+<script>
+    // var server_name_list = {{ server_name_list|safe }};
+</script>
+<script src="/static/js/lib/mail_manager.js" ></script>
+</html>

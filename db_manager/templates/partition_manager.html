@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分区表配置信息</title>
+    <style>
+      *{padding:0;margin:0;}
+      #wrap{position:relative;}
+      a{text-decoration:none;color:#000;}
+      .confirmDialog {width:100%;height:100%;position:absolute;left:0;top:0;background:rgba(0,0,0,.5);display:none;}
+      .dialog{position:absolute;left:50%;top:50%;transform:translate3d(-50%,-50%,0);width:400px;height:300px;background:#fff;border-radius:6px;}
+      .dialog h4{height:100px;line-height:180px;text-align:center;}
+      .dialog p{height:200px;line-height:200px;width:100%;width:90%;text-align:center;position:absolute;left:50%;transform:translate3d(-50%,0,0);}
+      .dialog p a{display:inline-block;width:100px;text-align:center;height:40px;line-height
+        :40px;border:1px solid #ccc;margin:0 10px;border-radius:6px;color:#fff;opacity:0.8;}
+      .nav{height:50px;width:100%;background:#7AFEC6;margin:0 auto;text-align:center; /*水平居中*/line-height:25px;}
+      .bottom {height:100px;width:100%;background:purple;text-align:left;line-height:100px;color:#fff;}
+      td,th{padding:5px 0}
+      .pagerBtn{text-align:center;height:100px;line-height:100px;}
+      .pagerBtn span{display:inline-block;width:30px;height:30px;line-height:30px;border:1px solid orange;margin:0 10px;border-radius:4px;}
+      .pagerBtn span.active{background:red;color:#fff;font-weight:bolder;}
+      #td input{width:90%;border:none;outline:none;background-color:gray}
+      td input{margin-top:-5px;margin-bottom:-5px;height:30px; width:100%;border:none;}
+      button{width:100%;height:30px;margin-top:-10px;margin-bottom:-5px;}
+
+    </style>
+</head>
+<body data='{{count}}'>
+    <div id='wrap'>
+        <!--是否确认删除弹框-->
+        <div class='confirmDialog'>
+            <div class='dialog'>
+                <h4>确定要删除吗</h4>
+                <p>
+                    <a href="#" style='background:green' class='confirm'>确定</a>
+                    <a href="#" style='background:red' class='cancel'>取消</a>
+                </p>
+            </div>
+        </div>
+        <!--导航-->
+        <div class="nav">
+            <p style="position:absolute;left: 50px;top:15px;">partition-manager</p>
+            <section style="position:absolute;right:100px;top:15px;">
+                <form action="/partition_manager/" method="post">
+                    <input type="text" placeholder="请输入库名" name="schema_name" value="{{schema_name}}">
+                    <input type="submit" style="background:white" value="搜索" >
+                    <a style="position:absolute;right:-80px;top:0px" href="http://127.0.0.1:8000/login/">首页</a>
+                </form>
+
+            </section>
+        </div>
+
+        <!--更改、删除列表展示区域-->
+        <div>
+            <table border="1" style="border-collapse:collapse;width:100%">
+                <thead>
+                    <th> table_id </th>
+                    <th>库名</th>
+                    <th>表名</th>
+                    <th>从今天开始向后创建多少天的分区</th>
+                    <th>从今天开始清除前多少天的分区</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </thead>
+                <tbody id="split_show">
+                    {% for line in table_config_list %}
+                        <tr>
+                            <td style="padding:5px 0;">{{ line.table_id }}</td>
+                            <td>{{ line.schema_name }}</td>
+                            <td>{{ line.table_name }}</td>
+                            <td><input type="number" placeholder="请输入修改天数" class="fwd" value="{{ line.forward_day }}"></td>
+                            <td><input type="number" placeholder="请输入修改天数" class="cbd" value="{{ line.clear_before_day }}"></td>
+                            <td>
+                                <button style="width:100%;height:30px;margin-top:-10px;margin-bottom:-5px;" class='update'>修改</button>
+                            </td>
+                            <td>
+                                <button class='delete'>删除</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div>
+            <table border="1" style="border-collapse:collapse;width:100%">
+                <thead>
+                <th>库名</th>
+                <th>表名</th>
+                <th>从今天开始向后创建多少天的分区</th>
+                <th>从今天开始清除前多少天的分区</th>
+                <th>增加</th>
+            </thead>
+                <tbody>
+                <tr>
+                    <td><input type="text" class="sna" placeholder="请输入库名" required="required" value="" name="schema_name"></td>
+                    <td><input type="text" class="tna" placeholder="请输入表名" required="required" value="" name="table_name"></td>
+                    <td><input type="number" class="fwd" placeholder="天数" required="required" value="" name="forward_day"></td>
+                    <td><input type="number" class="cbd" placeholder="天数" required="required" value="" name="clear_before_day"></td>
+                    <td>
+                        <button class='insert'>增加</button>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        <div>
+            <div class='status_delete' style='line-height:100px;'>执行状态:<span class="info_exec"></span></div>
+        </div>
+        <!--分页器-->
+        <div class="pagerBtn">
+
+        </div>
+
+        <!--底部-->
+        <div class="bottom" >
+            页脚后续优化
+        </div>
+    </div>
+    <script src='/static/js/lib/jquery.min.js'></script>
+    <script>
+        //删除每一行数据
+        bindListEvent();
+        function bindDeleteEvent () {
+              var deleteDom = $('.delete');
+              deleteDom.click(function(event){                       //点击鼠标触发事件
+                    var self = this;
+                    var table_id=$(this).parents('tr').find('td:first-child').text();
+                    $('.confirmDialog').show()                      //show() 方法显示隐藏的被选元素。
+                    $('.dialog h4').text('确认删除吗')
+                    $('.confirm').click(function(){                 //当点击确认对话框中当'确认'时候执行下面函数
+                        $.ajax({
+                            url: '/delete/',
+                            type: "post",
+                            data:{'table_id':table_id},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data.status)
+                                if (data.status == 'ok') {
+                                   $('.confirmDialog').hide();
+                                   $(self).parents('tr').remove();
+                                   $('.info_exec').text('delete ok');
+                                }
+                                else {
+                                    $('.info_exec').text('failure');
+                                }
+                            },
+                            error:function(err){
+                                console.log(err)
+                            }
+                        });
+                    })
+                    $('.cancel').click(function(){                //当点击'取消'时执行下面函数
+                        $('.confirmDialog').hide()
+                    })
+            })
+        }
+
+        //更改每一行数据
+        function bindUpdateEvent () {
+            var updateDom = $('.update');
+            updateDom.click(function(event){
+                var table_id=$(this).parents('tr').find('td:first-child').text();
+                var forward_day=$.trim($(this).parents('tr').find('.fwd').val());
+                var forward_day_len=$.trim($(this).parents('tr').find('.fwd').val()).length;
+                var clear_before_day=$.trim($(this).parents('tr').find('.cbd').val());
+                var clear_before_day_len=$.trim($(this).parents('tr').find('.cbd').val()).length;
+
+                if(forward_day_len<=0 || clear_before_day_len<=0){
+                    alert('此内容为必填项');
+                    return;
+                }
+                $('.confirmDialog').show();
+                $('.dialog h4').text('确认修改吗')
+                $('.confirm').click(function(){
+                    $.ajax({
+                        url: '/update/',
+                        type: "post",
+                        data:{'table_id':table_id,'forward_day':forward_day,'clear_before_day':clear_before_day},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data.status)
+                            if (data.status == 'ok') {
+                               $('.confirmDialog').hide();
+                               $('.info_exec').text('update ok');
+                            }
+                            else {
+                                $('.info_exec').text('failure');
+                            }
+                        },
+                        error:function(err){
+                            console.log(err)
+                        }
+                    });
+                })
+                $('.cancel').click(function(){                //当点击'取消'时执行下面函数
+                    $('.confirmDialog').hide()
+                })
+            })
+        }
+
+
+        //增加每一行数据
+        function bindInsertEvent () {
+            var insertDom = $('.insert');
+            insertDom.click(function(event){
+                //获取输入信息
+                var schema_name=$.trim($(this).parents('tr').find('.sna').val());
+                var table_name=$.trim($(this).parents('tr').find('.tna').val());
+                var forward_day=$.trim($(this).parents('tr').find('.fwd').val());
+                var clear_before_day=$.trim($(this).parents('tr').find('.cbd').val());
+                //检查输入长度
+                var schema_name_len=$.trim($(this).parents('tr').find('.sna').val()).length;
+                var table_name_len=$.trim($(this).parents('tr').find('.tna').val()).length;
+                var clear_before_day_len=$.trim($(this).parents('tr').find('.cbd').val()).length;
+                var forward_day_len=$.trim($(this).parents('tr').find('.fwd').val()).length;
+                <!--console.log(table_id,forward_day,clear_before_day,)-->
+                if(schema_name_len<=0 || table_name_len<=0 || forward_day_len<=0 || clear_before_day_len<=0){
+                    alert('输入框不允许为空');
+                    return;
+                }
+                $('.confirmDialog').show();
+                $('.dialog h4').text('确认增加吗')
+                $('.confirm').click(function(){
+                    $.ajax({
+                        url: '/insert/',
+                        type: "post",
+                        data:{'schema_name':schema_name,'table_name':table_name,'forward_day':forward_day,'clear_before_day':clear_before_day},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.status == 'ok') {
+                               $('.confirmDialog').hide();
+                               $('.info_exec').text('insert ok');
+                            }
+                            else {
+                                $('.info_exec').text('failure');
+                            }
+                        },
+                        error:function(data){
+                            data = JSON.parse(data);
+                            $('.confirmDialog').hide();
+                            $('.info_exec').error.status;
+                            console.log(err)
+                        }
+                    });
+                })
+                $('.cancel').click(function(){                //当点击'取消'时执行下面函数
+                    $('.confirmDialog').hide()
+                })
+            })
+        }
+
+        function bindListEvent () {
+            bindDeleteEvent();
+            bindUpdateEvent();
+            bindInsertEvent();
+        }
+
+        //渲染分页器
+        var dataNums = $('body').attr('data');
+        var pages = Math.ceil(dataNums/10);
+        var schema_name = $('input[name="schema_name"]').val();
+        for(var i =0 ;i<pages;i++){
+            var page=i+1;
+            $('.pagerBtn').append($('<span>'+(i+1)+'</span>'));
+            $('.pagerBtn').find('span:first-child').addClass('active')
+        }
+        //切换分页
+        $('.pagerBtn span').click(function(event){
+            var curPage=$(this).text()
+            $(this).addClass('active').siblings().removeClass('active');
+            $.ajax({
+                url:'/partition_manager/',
+                data:{'front_pages':curPage,'schema_name':schema_name},
+                type:'POST',
+                success:function(data){
+                    var data=JSON.parse(data);
+                    var res = data.data;
+                    var str='';
+
+                    $.each(res,function(i,val){
+
+                        str+=
+                            '<tr>'+
+                                '<td style="padding:6px 0;">'+val.table_id+'</td>'+
+                                '<td>'+val.schema_name+'</td>'+
+                                '<td>'+val.table_name+'</td>'+
+                                '<td><input type="number" class="fwd" value="'+val.forward_day+'"></td>'+
+                                '<td><input type="number" class="cbd" value="'+val.clear_before_day+'"></td>'+
+                                '<td>'+
+                                    '<button class="update">修改</button>'+
+                                '</td>'+
+                                '<td>'+
+                                    '<button class="delete">删除</button>'+
+                                '</td>'+
+                           '</tr>'
+                           $('#split_show').html(str)
+                    })
+                    bindListEvent();
+                    console.log(str)
+                },
+                error:function(err){
+                    console.log(err);
+                }
+            })
+
+        })
+
+        //搜索
+        var serarchDom = $('.search');
+        var _this=this;
+        serarchDom.click(function(event){
+            var sname=$.trim($(this).prev().val())
+            $.ajax({
+                url:'/partition_manager/',
+                data:{'schema_name':sname},
+                type:'POST',
+                success:function(data){
+                    var data=JSON.parse(data);
+                    console.log(data);
+                    var res = data.data;
+                    var str='';
+                    $.each(res,function(i,val){
+                        str+=
+                            '<tr>'+
+                                '<td style="padding:6px 0;">'+val.table_id+'</td>'+
+                                '<td>'+val.schema_name+'</td>'+
+                                '<td>'+val.table_name+'</td>'+
+                                '<td><input type="number" class="fwd" value="'+val.forward_day+'"></td>'+
+                                '<td><input type="number" class="cbd" value="'+val.clear_before_day+'"></td>'+
+                                '<td>'+
+                                    '<button class="update">修改</button>'+
+                                '</td>'+
+                                '<td>'+
+                                    '<button class="delete">删除</button>'+
+                                '</td>'+
+                           '</tr>'
+                           $('#split_show').html(str)
+                    })
+                    console.log(str)
+                },
+                error:function(err){
+                    console.log(err);
+                }
+            })
+        })
+    </script>
+</body>
+</html>

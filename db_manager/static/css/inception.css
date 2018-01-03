@@ -1,0 +1,63 @@
+
+.nav-flex {
+    display: flex;
+    align-items: center;
+}
+.nav-content {
+    width: 1140px;
+}
+.input-form {
+    width: 100%;
+    padding: 0 50px 50px 10px;
+}
+.panel-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: 0;
+}
+
+.navbar-left .condit-query {
+    display: block;
+    position: relative;
+    margin: 0 30px 25px 0;
+}
+.condit-query .sql-sentence {
+    width: 80%;
+    height: 400px;
+}
+.field-dsp {
+    display: inline-block;
+    width: 100px;
+}
+.drop-box {
+    display: inline-block;
+}
+.drop-active {
+    background-color: #f5f5f5;
+}
+.search-box {
+    position: relative;
+    display: inline-block;
+}
+.c-label {
+    margin-left: 40px;
+}
+.l-top {
+    vertical-align: top;
+}
+.result-lis {
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 34px;
+}
+.panel-wrapper {
+    display: none;
+    clear: both;
+}
+.submit-btn {
+    display: block;
+    margin: 0 auto;
+}
