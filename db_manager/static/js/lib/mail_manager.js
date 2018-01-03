@@ -38,7 +38,7 @@
             onChange: function (name) {
                 sendData.server_name = name;
             },
-            // downList: server_name_list,
+            downList: server_name_list,
             renderItem: function (item) {
                 return item.server_name;
             }
