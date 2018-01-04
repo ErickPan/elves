@@ -17,6 +17,7 @@ urlpatterns = [
     django.conf.urls.url(r'^get_mailuser_info/$', 'partition.view.get_mailuser_info', name='logout'),
     django.conf.urls.url(r'^inception/$', 'partition.view.inception', name='logout'),
     django.conf.urls.url(r'^check_sql/$', 'partition.view.check_sql', name='logout'),
+    django.conf.urls.url(r'^db_server_manager/$', 'partition.view.db_server_manager', name='logout'),
 ]
 
 

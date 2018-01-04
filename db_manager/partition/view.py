@@ -312,3 +312,63 @@ def check_sql(request):
             print "Mysql Error %d: %s" % (e.args[0], e.args[1])
     else:
         return render_to_response('login.html')
+####################################################db服务器资源管理模块####################################################
+#db资源管理渲染页面
+def db_server_manager(request):
+    username_cookie = request.COOKIES.get('userlogin_username')
+    if username_cookie:
+        pages = request.POST.get('front_pages')
+        db_type = request.POST.get('db_type')
+        # 正常查询
+        if db_type == None:
+            db_type=''
+            server_list = models.DbServerInfo.objects.all()
+            count = len(server_list)
+            if pages==None:
+                server_list = models.DbServerInfo.objects.all()[0:10]
+                return render(request, 'db_server.html',{'server_list': server_list, 'count': count,'db_type':db_type})
+            else:
+                page=int(pages)
+                limit = page * 10
+                offset = (page - 1) * 10
+                status = ''
+                message = ''
+                try:
+                   table_config_list = models.DbServerInfo.objects.all()[offset:limit]
+                   list = []
+                   for i in table_config_list:
+                       u = model_to_dict(i)
+                       list.append(u)
+                   message = page
+                   status = 'ok'
+                   return HttpResponse(json.dumps({"messages": count, 'status': status, 'data': list}))
+                except Exception, ex:
+                   status = 'failure'
+                   return HttpResponse(json.dumps({"messages": ex, 'status': status}))
+        # 模糊搜索
+        elif db_type !=None:
+             table_config_list = models.DbServerInfo.objects.filter(db_type__icontains=db_type)
+             count = len(table_config_list)
+             if pages == None:
+                 server_list = models.DbServerInfo.objects.filter(db_type__icontains=db_type)[0:10]
+                 return render(request, 'db_server.html',{'server_list': server_list, 'count': count,'db_type':db_type})
+             else:
+                 page=int(pages)
+                 limit = page * 10
+                 offset = (page - 1) * 10
+                 status = ''
+                 message = ''
+                 try:
+                     server_list = models.DbServerInfo.objects.filter(db_type__icontains=db_type)[offset:limit]
+                     list = []
+                     for i in server_list:
+                         u = model_to_dict(i)
+                         list.append(u)
+                     message = page
+                     status = 'ok'
+                     return HttpResponse(json.dumps({"messages": count, 'status': status, 'data': list}))
+                 except Exception, ex:
+                     status = 'failure'
+                     return HttpResponse(json.dumps({"messages": ex, 'status': status}))
+    else:
+        return render_to_response('login.html')

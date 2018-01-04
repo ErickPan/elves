@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>db服务器资源列表</title>
+    <style>
+      *{padding:0;margin:0;}
+      #wrap{position:relative;}
+      a{text-decoration:none;color:#000;}
+      .confirmDialog {width:100%;height:100%;position:absolute;left:0;top:0;background:rgba(0,0,0,.5);display:none;}
+      .dialog{position:absolute;left:50%;top:50%;transform:translate3d(-50%,-50%,0);width:400px;height:300px;background:#fff;border-radius:6px;}
+      .dialog h4{height:100px;line-height:180px;text-align:center;}
+      .dialog p{height:200px;line-height:200px;width:100%;width:90%;text-align:center;position:absolute;left:50%;transform:translate3d(-50%,0,0);}
+      .dialog p a{display:inline-block;width:100px;text-align:center;height:40px;line-height
+        :40px;border:1px solid #ccc;margin:0 10px;border-radius:6px;color:#fff;opacity:0.8;}
+      .nav{height:50px;width:100%;background:#7AFEC6;margin:0 auto;text-align:center; /*水平居中*/line-height:25px;}
+      .bottom {height:100px;width:100%;background:purple;text-align:left;line-height:100px;color:#fff;}
+      td,th{padding:5px 0}
+      .pagerBtn{text-align:center;height:100px;line-height:100px;}
+      .pagerBtn span{display:inline-block;width:30px;height:30px;line-height:30px;border:1px solid orange;margin:0 10px;border-radius:4px;}
+      .pagerBtn span.active{background:red;color:#fff;font-weight:bolder;}
+      #td input{width:90%;border:none;outline:none;background-color:gray}
+      td input{margin-top:-5px;margin-bottom:-5px;height:30px; width:100%;border:none;}
+      button{width:100%;height:30px;margin-top:-10px;margin-bottom:-5px;}
+
+    </style>
+</head>
+<body data='{{count}}'>
+    <div id='wrap'>
+        <!--导航-->
+        <div class="nav">
+            <p style="position:absolute;left: 50px;top:15px;">DB服务器资源列表</p>
+            <section style="position:absolute;right:100px;top:15px;">
+                <form action="/db_server_manager/" method="post">
+                    <input type="text" placeholder="db_type" name="db_type" value="{{db_type}}">
+                    <input type="submit" style="background:white" value="搜索" >
+                </form>
+
+            </section>
+        </div>
+
+        <!--列表展示区域-->
+        <div>
+            <table border="1" style="border-collapse:collapse;width:100%">
+                <thead>
+                    <th>server_name</th>
+                    <th>server_ip</th>
+                    <th>server_port</th>
+                    <th>server_type</th>
+                    <th>db_type</th>
+                    <th>db_role</th>
+                    <th>environment</th>
+                    <th>description</th>
+                </thead>
+                <tbody id="split_show">
+                    {% for line in server_list %}
+                        <tr>
+                            <td>{{ line.server_name }}</td>
+                            <td>{{ line.server_ip }}</td>
+                            <td>{{ line.server_port }}</td>
+                            <td>{{ line.server_type }}</td>
+                            <td>{{ line.db_type }}</td>
+                            <td>{{ line.db_role }}</td>
+                            <td>{{ line.environment }}</td>
+                            <td>{{ line.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!--分页器-->
+        <div class="pagerBtn">
+
+        </div>
+
+        <!--底部-->
+        <div class="bottom" >
+            页脚
+        </div>
+    </div>
+    <script src='/static/js/lib/jquery.min.js'></script>
+    <script>
+        //渲染分页器
+        var dataNums = $('body').attr('data');
+        var pages = Math.ceil(dataNums/10);
+        var schema_name = $('input[name="schema_name"]').val();
+        for(var i =0 ;i<pages;i++){
+            var page=i+1;
+            $('.pagerBtn').append($('<span>'+(i+1)+'</span>'));
+            $('.pagerBtn').find('span:first-child').addClass('active')
+        }
+        //切换分页
+        $('.pagerBtn span').click(function(event){
+            var curPage=$(this).text()
+            $(this).addClass('active').siblings().removeClass('active');
+            $.ajax({
+                url:'/db_server_manager/',
+                data:{'front_pages':curPage,'schema_name':schema_name},
+                type:'POST',
+                success:function(data){
+                    var data=JSON.parse(data);
+                    var res = data.data;
+                    var str='';
+
+                    $.each(res,function(i,val){
+
+                        str+=
+                            '<tr>'+
+                                '<td>'+val.server_name+'</td>'+
+                                '<td>'+val.server_ip+'</td>'+
+                                '<td>'+val.server_port+'</td>'+
+                                '<td>'+val.server_type+'</td>'+
+                                '<td>'+val.db_type+'</td>'+
+                                '<td>'+val.db_role+'</td>'+
+                                '<td>'+val.environment+'</td>'+
+                                '<td>'+val.description+'</td>'+
+                           '</tr>'
+                           $('#split_show').html(str)
+                    })
+                    bindListEvent();
+                    console.log(str)
+                },
+                error:function(err){
+                    console.log(err);
+                }
+            })
+
+        })
+
+        //搜索
+        var serarchDom = $('.search');
+        var _this=this;
+        serarchDom.click(function(event){
+            var db_type=$.trim($(this).prev().val())
+            $.ajax({
+                url:'/db_server_manager/',
+                data:{'db_type':db_type},
+                type:'POST',
+                success:function(data){
+                    var data=JSON.parse(data);
+                    console.log(data);
+                    var res = data.data;
+                    var str='';
+                    $.each(res,function(i,val){
+                        str+=
+                            '<tr>'+
+                                '<td style="padding:6px 0;">'+val.table_id+'</td>'+
+                                '<td>'+val.schema_name+'</td>'+
+                                '<td>'+val.table_name+'</td>'+
+                                '<td><input type="number" class="fwd" value="'+val.forward_day+'"></td>'+
+                                '<td><input type="number" class="cbd" value="'+val.clear_before_day+'"></td>'+
+                                '<td>'+
+                                    '<button class="update">修改</button>'+
+                                '</td>'+
+                                '<td>'+
+                                    '<button class="delete">删除</button>'+
+                                '</td>'+
+                           '</tr>'
+                           $('#split_show').html(str)
+                    })
+                    console.log(str)
+                },
+                error:function(err){
+                    console.log(err);
+                }
+            })
+        })
+    </script>
+</body>
+</html>
