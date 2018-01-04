@@ -284,12 +284,13 @@ def check_sql(request):
         # proxy_port = '3306'
         user_name = 'elves_ro'
         user_pass = 'pwVUwffHnC9AHAW4'
-        sql = """/*--user=%s;--password=%s;--host=%s;--execute=1;--port=%s;*/\
+        sql_pre = """/*--user=%s;--password=%s;--host=%s;--execute=1;--port=%s;*/\
             inception_magic_start;
             set names utf8;
             use %s;
             %s
             inception_magic_commit;""" % (user_name, user_pass, proxy_ip, proxy_port,schema_name,sql_content)
+        sql = sql_pre.encode("utf-8")
         try:
             conn = MySQLdb.connect(host='192.168.3.20', user='', passwd='', db='', port=6669,charset="utf8")
             cur = conn.cursor()
