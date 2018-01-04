@@ -1,0 +1,52 @@
+---管理平台注册用户表
+CREATE TABLE `db_manager_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(128) NOT NULL COMMENT '用户名',
+  `pwd` varchar(128) NOT NULL COMMENT '密码',
+  `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '注册时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+---haproxy代理后端多个服务器端配置信息表
+CREATE TABLE `db_proxy_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `server_name` varchar(50) NOT NULL COMMENT '主机名',
+  `proxy_ip` varchar(50) NOT NULL COMMENT '主机ip',
+  `proxy_port` char(4) NOT NULL COMMENT '代理端口',
+  `db_type` varchar(50) NOT NULL COMMENT '数据库类型:redis,mongo,mysql',
+  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
+  `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='db_proxy服务器信息表';
+
+---mysql服务器资源列表
+CREATE TABLE `db_server_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `server_name` varchar(50) NOT NULL COMMENT '主机名',
+  `server_ip` varchar(50) NOT NULL COMMENT '主机ip',
+  `server_port` char(4) NOT NULL DEFAULT '3306' COMMENT 'server_port',
+  `server_type` varchar(50) NOT NULL DEFAULT '' COMMENT '服务器类型:云服务器、托管物理机、本地虚拟主机、本地物理机',
+  `db_type` varchar(50) NOT NULL COMMENT '数据库类型:mongo,mysql',
+  `schema_name` varchar(50) NOT NULL COMMENT '库名',
+  `environment` varchar(50) DEFAULT '' COMMENT 'qa环境、pro环境、其他',
+  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
+  `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='db服务器信息表';
+
+---分区表管理信息配置表
+CREATE TABLE `mb_table_config` (
+  `table_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `schema_name` varchar(64) NOT NULL COMMENT '数据库名',
+  `table_name` varchar(128) NOT NULL COMMENT '表名',
+  `forward_day` int(11) NOT NULL COMMENT '从今天算，提前创建的天数',
+  `clear_before_day` int(11) NOT NULL COMMENT '从当天算，清除之前的天数',
+  `create_time` bigint(20) NOT NULL,
+  `update_time` bigint(20) DEFAULT '0',
+  PRIMARY KEY (`table_id`),
+  UNIQUE KEY `schema_name_table_name` (`schema_name`,`table_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8 COMMENT='分区表管理信息配置表';
+
