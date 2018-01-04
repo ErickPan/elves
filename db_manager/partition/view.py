@@ -11,7 +11,7 @@ from django.forms.models import model_to_dict
 import json    #返回json
 import sys
 reload(sys)
-sys.setdefaultencoding( "utf-8" ) 
+sys.setdefaultencoding( "utf-8" )
 
 #定义register页,暂时不用
 def register(request):
@@ -37,7 +37,7 @@ def login(request):
                     if username:
                         pass
                     else:
-                        response.set_cookie('userlogin_username',name,3600)
+                        response.set_cookie('userlogin_username',name,36000)
                     return response
                 else:
                     status = '密码错误，请重新输入'

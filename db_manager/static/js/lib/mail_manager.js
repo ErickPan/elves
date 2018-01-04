@@ -196,7 +196,7 @@
     new FormGroup('#effect-line', '影响行数')
         .insert('<input type="text" class="form-control effect-l" placeholder="请输入影响行数">');
     new FormGroup('#sql-version', 'SQL文件版本')
-        .insert('<input type="text" class="form-control sql-v" placeholder="请输入SQL文件版本">');
+        .insert('<input type="text" class="form-control sql-v" placeholder="输入SQL文件版本前缀">');
 
     new FormGroup('#remarks', '内容', 'l-top')
         .insert('<textarea class="form-control mail-remarks" rows="10" placeholder="@审批人名字，选择项目组组长或leader，并说明申请原因，用来做什么；sql或sql文件在邮件客户端输入"></textarea>');
