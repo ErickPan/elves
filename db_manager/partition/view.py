@@ -9,7 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.forms.models import model_to_dict
 import json    #返回json
-
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" ) 
 
 #定义register页,暂时不用
 def register(request):
