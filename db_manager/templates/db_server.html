@@ -44,6 +44,7 @@
         <div>
             <table border="1" style="border-collapse:collapse;width:100%">
                 <thead>
+                    <th>id</th>
                     <th>server_name</th>
                     <th>server_ip</th>
                     <th>server_port</th>
@@ -56,6 +57,7 @@
                 <tbody id="split_show">
                     {% for line in server_list %}
                         <tr>
+                            <td>{{ line.id }}</td>
                             <td>{{ line.server_name }}</td>
                             <td>{{ line.server_ip }}</td>
                             <td>{{ line.server_port }}</td>
@@ -84,7 +86,7 @@
         //渲染分页器
         var dataNums = $('body').attr('data');
         var pages = Math.ceil(dataNums/10);
-        var schema_name = $('input[name="schema_name"]').val();
+        var db_type = $('input[name="db_type"]').val();
         for(var i =0 ;i<pages;i++){
             var page=i+1;
             $('.pagerBtn').append($('<span>'+(i+1)+'</span>'));
@@ -96,7 +98,7 @@
             $(this).addClass('active').siblings().removeClass('active');
             $.ajax({
                 url:'/db_server_manager/',
-                data:{'front_pages':curPage,'schema_name':schema_name},
+                data:{'front_pages':curPage,'db_type':db_type},
                 type:'POST',
                 success:function(data){
                     var data=JSON.parse(data);
@@ -107,6 +109,7 @@
 
                         str+=
                             '<tr>'+
+                                '<td>'+val.id+'</td>'+
                                 '<td>'+val.server_name+'</td>'+
                                 '<td>'+val.server_ip+'</td>'+
                                 '<td>'+val.server_port+'</td>'+
@@ -118,7 +121,6 @@
                            '</tr>'
                            $('#split_show').html(str)
                     })
-                    bindListEvent();
                     console.log(str)
                 },
                 error:function(err){
@@ -150,12 +152,6 @@
                                 '<td>'+val.table_name+'</td>'+
                                 '<td><input type="number" class="fwd" value="'+val.forward_day+'"></td>'+
                                 '<td><input type="number" class="cbd" value="'+val.clear_before_day+'"></td>'+
-                                '<td>'+
-                                    '<button class="update">修改</button>'+
-                                '</td>'+
-                                '<td>'+
-                                    '<button class="delete">删除</button>'+
-                                '</td>'+
                            '</tr>'
                            $('#split_show').html(str)
                     })

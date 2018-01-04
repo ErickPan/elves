@@ -319,6 +319,7 @@ def db_server_manager(request):
     if username_cookie:
         pages = request.POST.get('front_pages')
         db_type = request.POST.get('db_type')
+        print db_type,pages
         # 正常查询
         if db_type == None:
             db_type=''
