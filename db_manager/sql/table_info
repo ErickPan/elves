@@ -3,10 +3,11 @@ CREATE TABLE `db_manager_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(128) NOT NULL COMMENT '用户名',
   `pwd` varchar(128) NOT NULL COMMENT '密码',
+  `user_privilege` varchar(10) NOT NULL DEFAULT '' COMMENT '用户权限',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '注册时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 ---haproxy代理后端多个服务器端配置信息表
 CREATE TABLE `db_proxy_info` (
@@ -26,16 +27,16 @@ CREATE TABLE `db_server_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `server_name` varchar(50) NOT NULL COMMENT '主机名',
   `server_ip` varchar(50) NOT NULL COMMENT '主机ip',
-  `server_port` char(4) NOT NULL DEFAULT '3306' COMMENT 'server_port',
+  `server_port` char(10) NOT NULL DEFAULT '3306' COMMENT 'server_port',
   `server_type` varchar(50) NOT NULL DEFAULT '' COMMENT '服务器类型:云服务器、托管物理机、本地虚拟主机、本地物理机',
   `db_type` varchar(50) NOT NULL COMMENT '数据库类型:mongo,mysql',
-  `schema_name` varchar(50) NOT NULL COMMENT '库名',
-  `environment` varchar(50) DEFAULT '' COMMENT 'qa环境、pro环境、其他',
+  `db_role` varchar(50) NOT NULL COMMENT '角色:mysql_master,mysql_slave,redis_master,redis_slave,redis_sentine,mongo_primary,mongo_secondary,mongo_arbiter',
+  `environment` varchar(50) DEFAULT '' COMMENT 'qa环境、pro环境、演示环境、其他',
   `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
   `create_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '添加时间',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='db服务器信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='db服务器信息表';
 
 ---分区表管理信息配置表
 CREATE TABLE `mb_table_config` (
