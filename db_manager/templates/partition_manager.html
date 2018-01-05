@@ -130,7 +130,7 @@
                     var table_id=$(this).parents('tr').find('td:first-child').text();
                     $('.confirmDialog').show()                      //show() 方法显示隐藏的被选元素。
                     $('.dialog h4').text('确认删除吗')
-                    $('.confirm').click(function(){                 //当点击确认对话框中当'确认'时候执行下面函数
+                    $('.confirm').off().click(function(){                 //当点击确认对话框中当'确认'时候执行下面函数
                         $.ajax({
                             url: '/delete/',
                             type: "post",
@@ -174,7 +174,7 @@
                 }
                 $('.confirmDialog').show();
                 $('.dialog h4').text('确认修改吗')
-                $('.confirm').click(function(){
+                $('.confirm').off().click(function(){
                     $.ajax({
                         url: '/update/',
                         type: "post",
@@ -223,20 +223,15 @@
                 }
                 $('.confirmDialog').show();
                 $('.dialog h4').text('确认增加吗')
-                $('.confirm').click(function(){
+                $('.confirm').off().click(function(){
                     $.ajax({
                         url: '/insert/',
                         type: "post",
                         data:{'schema_name':schema_name,'table_name':table_name,'forward_day':forward_day,'clear_before_day':clear_before_day},
                         success: function (data) {
                             data = JSON.parse(data);
-                            if (data.status == 'ok') {
-                               $('.confirmDialog').hide();
-                               $('.info_exec').text('insert ok');
-                            }
-                            else {
-                                $('.info_exec').text('failure');
-                            }
+                            $('.confirmDialog').hide();
+                            $('.info_exec').text(data.status);
                         },
                         error:function(data){
                             data = JSON.parse(data);
@@ -253,8 +248,8 @@
         }
 
         function bindListEvent () {
-            bindDeleteEvent();
-            bindUpdateEvent();
+           bindDeleteEvent();
+           bindUpdateEvent();
             bindInsertEvent();
         }
 

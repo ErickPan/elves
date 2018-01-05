@@ -141,7 +141,8 @@ def insert(request):
             return HttpResponse(json.dumps({'status': status}))
         except Exception, ex:
             print ex
-            return HttpResponse(json.dumps({'status': ex}))
+            status = str(ex)
+            return HttpResponse(json.dumps({'status': status}))
     else:
         return render_to_response('login.html')
 
