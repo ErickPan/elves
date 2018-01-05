@@ -39,6 +39,7 @@
                 sendData.server_name = name;
             },
             downList: server_name_list,
+
             renderItem: function (item) {
                 return item.server_name;
             }
@@ -46,6 +47,7 @@
     var schemaNameSearch = new SearchBox({
         placeholder: '搜索库名',
         onChange: function (name) {
+
             if (!$('.c-schema').length) {
                 schemaNameSearch.setValue('');
                 schemaNameSearch.parentGroup().insert(
@@ -54,7 +56,6 @@
             } else {
                 alert('库名最多只能添加一个');
             }
-
         },
         renderItem: function (item) {
             return item.schema_name;
@@ -78,8 +79,8 @@
     new FormGroup('#exec-content', 'sql语句', 'l-top')
     .insert('<textarea class="form-control sql-sentence" rows="10" placeholder="请输入sql语句"></textarea>');
     var isReturn = true;
-    var $error = $('.error-message'),
-        $dLog = $error.parent();
+    var $error = $('.error-message').children(),
+        $dLog = $error.parent().parent();
     $('.submit-btn').on('click', function () {
         if (isReturn) {
             $error.html('检测中。。。。。。')

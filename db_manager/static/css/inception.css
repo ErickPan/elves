@@ -17,7 +17,6 @@
     margin: 0 auto;
     bottom: 0;
 }
-
 .navbar-left .condit-query {
     display: block;
     position: relative;
@@ -53,6 +52,7 @@
     left: 0;
     top: 34px;
 }
+
 .panel-wrapper {
     display: none;
     clear: both;

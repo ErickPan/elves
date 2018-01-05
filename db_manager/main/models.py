@@ -16,6 +16,7 @@ class DbManagerUsers(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     name = models.CharField(unique=True, max_length=128)
     pwd = models.CharField(max_length=128)
+    user_privilege = models.CharField(max_length=10)
     create_time = models.DateTimeField()
 
     class Meta:

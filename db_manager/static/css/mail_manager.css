@@ -41,7 +41,13 @@
     top: 34px;
 }
 .condit-query .mail-remarks {
+    display: inline-block;
     width: 80%;
+    height: 280px;
+    padding: 6px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 .submit-btn {
     display: block;
