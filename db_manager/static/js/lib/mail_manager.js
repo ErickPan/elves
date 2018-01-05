@@ -200,10 +200,10 @@
 
     new FormGroup('#remarks', '内容', 'l-top')
         .insert('<textarea class="form-control mail-remarks" rows="10" placeholder="@审批人名字，选择项目组组长或leader，并说明申请原因，用来做什么；sql或sql文件在邮件客户端输入"></textarea>');
-
     $('.condit-query').on('click', '.label-clear', function () {
         $(this).parent('.c-label').remove();
     });
+
     var $index,
         keyModel = '',
         $tabs = $('.tab-item');
