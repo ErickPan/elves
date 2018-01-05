@@ -1,3 +1,10 @@
 textarea {
-    resize: none; 
+    resize: none;
+}
+p[contenteditable]:empty:before{
+    content: attr(placeholder);
+    color: #CCCCCC;
+}
+p[contenteditable]:focus{
+    content: none;
 }

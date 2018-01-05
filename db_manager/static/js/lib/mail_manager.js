@@ -197,11 +197,12 @@
         .insert('<input type="text" class="form-control effect-l" placeholder="请输入影响行数">');
     new FormGroup('#sql-version', 'SQL文件版本')
         .insert('<input type="text" class="form-control sql-v" placeholder="输入SQL文件版本前缀">');
-
+    new FormGroup('#is-a', '是否有大表alter操作')
+        .insert('<input type="text" class="form-control is-alter" placeholder="请输入大于500万的表">');
     // new FormGroup('#remarks', '内容', 'l-top')
     //     .insert('<textarea class="form-control mail-remarks" rows="10" placeholder="@审批人名字，选择项目组组长或leader，并说明申请原因，用来做什么；sql或sql文件在邮件客户端输入"></textarea>');
     new FormGroup('#remarks', '内容', 'l-top')
-    .insert('<p contenteditable="true" class="mail-remarks" placeholder="@审批人名字，选择项目组组长或leader，并说明申请原因，用来做什么；sql或sql文件在邮件客户端输入"></p>');
+    .insert('<p contenteditable="true" class="mail-remarks" placeholder="@审批人名字，选择项目组组长或leader，并说明申请原因."></p>');
 
     $('.condit-query').on('click', '.label-clear', function () {
         $(this).parent('.c-label').remove();
@@ -224,22 +225,23 @@
                 $('#sql-type').show();
                 $('#effect-line').show();
                 $index = 0;
-                keyModel = '\r\n【sql类型】：' + sendData.type +
-                            '<br>【影响行数】：' + $('.effect-l').val();
+//                keyModel = '\r\n【sql类型】：' + sendData.type +
+//                            '<br>【影响行数】：' + $('.effect-l').val();
                 break;
             case 'privilege-apply':
                 $tabs.eq(1).addClass('active');
                 $('#sql-privilege').show();
                 $index = 1;
-                keyModel = '<br>【申请权限】：' + sendData.privilege ;
+//                keyModel = '<br>【申请权限】：' + sendData.privilege ;
                 break;
             case 'migration-apply':
                 $tabs.eq(2).addClass('active');
                 $('#sql-migration').show();
                 $('#sql-version').show();
+                $('#is-a').show();
                 $index = 2;
-                keyModel = '<br>【git分支】：' + sendData.migration +
-                            '<br>【sql文件版本】：' + $('.sql-v').val();
+//                keyModel = '<br>【git分支】：' + sendData.migration +
+//                            '<br>【sql文件版本】：' + $('.sql-v').val();
                 break;
         }
 
@@ -265,7 +267,8 @@
                 break;
             case 2:
                 keyModel = '<br>【git分支】：' + sendData.migration +
-                            '<br>【sql文件版本】：' + $('.sql-v').val();
+                            '<br>【sql文件版本】：' + $('.sql-v').val() +
+                            '<br>【是否有大表alter操作】：' + $('.is-alter').val();
                 break;
         }
         console.log($('.mail-remarks').html());
