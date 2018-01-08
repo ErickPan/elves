@@ -31,7 +31,7 @@ def login(request):
     username_cookie = request.COOKIES.get('userlogin_username')
     if username_cookie:
         print username_cookie
-        response = render_to_response('welcome.html',{})
+        return render_to_response('welcome.html',{})
     else:
         name = request.POST.get('username')
         pwd = request.POST.get('userpass')
