@@ -77,7 +77,7 @@
     new FormGroup('#schema-name', '库名')
     .insert(schemaNameSearch);
     new FormGroup('#exec-content', 'sql语句', 'l-top')
-    .insert('<textarea class="form-control sql-sentence" rows="10" placeholder="请输入sql语句,timestamp类型如果默认值为0000-00-00 00:00:00报错可以忽略"></textarea>');
+    .insert('<textarea class="form-control sql-sentence" rows="10" placeholder="请输入sql语句,1)timestamp类型如果默认值为0000-00-00 00:00:00报错可以忽略;2)分区表审核时，请将分区信息移除"></textarea>');
     var isReturn = true;
     var $error = $('.error-message').children(),
         $dLog = $error.parent().parent();
