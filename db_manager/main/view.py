@@ -191,7 +191,7 @@ def delete(request):
 #邮件申请主页
 @auth
 def mail_manager(request):
-    server_name_list = models.DbProxyInfo.objects.all().values('server_name').exclude(server_name__iendswith='b')
+    server_name_list = models.DbServerInfo.objects.all().values('server_name').filter(db_role__icontains='mysql_master')
     list = []
     for i in server_name_list:
         list.append(i)
@@ -206,12 +206,12 @@ def get_schema_info(request):
     db_config = {}
     server_name = request.POST.get('server_name')
     key_words_schema = request.POST.get('key_words')
-    server_proxy_list = models.DbProxyInfo.objects.all().values('server_name','proxy_ip','proxy_port').filter(server_name=server_name)
+    server_proxy_list = models.DbProxyInfo.objects.all().values('server_name','proxy_ip','proxy_port','mysql_user','mysql_pass').filter(server_name=server_name)
     server_proxy_dic = server_proxy_list[0]
     proxy_ip = server_proxy_dic['proxy_ip']
     proxy_port = server_proxy_dic['proxy_port']
-    db_server_user = 'elves_ro'
-    db_server_pass = 'pwVUwffHnC9AHAW4'
+    db_server_user = server_proxy_dic['mysql_user']
+    db_server_pass = server_proxy_dic['mysql_pass']
     db_config['host'] = proxy_ip
     db_config['port'] = proxy_port
     db_config['user'] = db_server_user
