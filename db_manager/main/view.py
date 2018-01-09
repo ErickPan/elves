@@ -268,14 +268,13 @@ def check_sql(request):
     server_name = request.POST.get('server_name')
     schema_name = request.POST.get('schema_name')
     sql_content = request.POST.get('sql_content')
-    server_proxy_list = models.DbProxyInfo.objects.all().values('server_name', 'proxy_ip', 'proxy_port').filter(server_name=server_name)
+    #从proxy配置表获取要连接到远程数据库的信息
+    server_proxy_list = models.DbProxyInfo.objects.all().values('server_name', 'proxy_ip', 'proxy_port','mysql_user','mysql_pass').filter(server_name=server_name)
     server_proxy_dic = server_proxy_list[0]
     proxy_ip = server_proxy_dic['proxy_ip']
     proxy_port = server_proxy_dic['proxy_port']
-    # proxy_ip = '192.168.3.20'
-    # proxy_port = '3306'
-    user_name = 'elves_ro'
-    user_pass = 'pwVUwffHnC9AHAW4'
+    user_name = server_proxy_dic['mysql_user']
+    user_pass = server_proxy_dic['mysql_pass']
     sql_pre = """/*--user=%s;--password=%s;--host=%s;--execute=1;--port=%s;*/\
         inception_magic_start;
         set names utf8;
@@ -283,6 +282,7 @@ def check_sql(request):
         %s
         inception_magic_commit;""" % (user_name, user_pass, proxy_ip, proxy_port,schema_name,sql_content)
     sql = sql_pre.encode("utf-8")
+    print sql
     try:
         conn = MySQLdb.connect(host='192.168.3.20', user='', passwd='', db='', port=6669,charset="utf8")
         cur = conn.cursor()
