@@ -13,6 +13,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
+
 #定义登陆验证装饰器,通过url访问每个函数均需要验证是否登陆
 def auth(func):
     def wrapper(request,*args, **kwargs):
@@ -191,44 +192,44 @@ def delete(request):
 #邮件申请主页
 @auth
 def mail_manager(request):
-    server_name_list = models.DbServerInfo.objects.all().values('server_name').filter(db_role__icontains='mysql_master')
+    server_name_list = models.DbProxyInfo.objects.all().values('server_name').exclude(server_name__iendswith='b')
     list = []
     for i in server_name_list:
         list.append(i)
     data = json.dumps(list)
     return render(request, 'mail_manager.html', {'server_name_list': data})
 
-# 获取数据库实例对应的库名
+# 根据前端传来的主机名，从db_proxy_info表中获取后端数据库的连接信息，然后到对应的机器查询所有数据库
 @auth
 def get_schema_info(request):
     import mysql.connector
     request.encoding = 'utf-8'
-    db_config = {}
     server_name = request.POST.get('server_name')
     key_words_schema = request.POST.get('key_words')
-    server_proxy_list = models.DbProxyInfo.objects.all().values('server_name','proxy_ip','proxy_port','mysql_user','mysql_pass').filter(server_name=server_name)
-    server_proxy_dic = server_proxy_list[0]
-    proxy_ip = server_proxy_dic['proxy_ip']
-    proxy_port = server_proxy_dic['proxy_port']
-    db_server_user = server_proxy_dic['mysql_user']
-    db_server_pass = server_proxy_dic['mysql_pass']
-    db_config['host'] = proxy_ip
-    db_config['port'] = proxy_port
-    db_config['user'] = db_server_user
-    db_config['password'] = db_server_pass
-    schema = key_words_schema +'%'
-    cnx = mysql.connector.connect(**db_config)
-    cursor = cnx.cursor()
-    query_schemas = ("select schema_name from information_schema.schemata where schema_name like \'%s\';" %(schema))
-    cursor.execute(query_schemas)
-    query_schemas_results = cursor.fetchall()
-    cnx.close()
-    direct = []
-    for one in query_schemas_results:
-        a = {}
-        a['schema_name'] = one[0]
-        direct.append(a)
-    return HttpResponse(json.dumps({'data': direct}))
+    if key_words_schema == '':
+        direct = []
+        return HttpResponse(json.dumps({'data': direct}))
+    else:
+        server_proxy_list = models.DbProxyInfo.objects.all().values('server_name','proxy_ip','proxy_port','mysql_user','mysql_pass').filter(server_name=server_name)
+        server_proxy_dic = server_proxy_list[0]
+        db_config = {}
+        db_config['host'] = server_proxy_dic['proxy_ip']
+        db_config['port'] = server_proxy_dic['proxy_port']
+        db_config['user'] = server_proxy_dic['mysql_user']
+        db_config['password'] = server_proxy_dic['mysql_pass']
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+        schema = key_words_schema + '%'
+        query_schemas = ("select schema_name from information_schema.schemata where schema_name like \'%s\';" %(schema))
+        cursor.execute(query_schemas)
+        query_schemas_results = cursor.fetchall()
+        cnx.close()
+        direct = []
+        for one in query_schemas_results:
+            a = {}
+            a['schema_name'] = one[0]
+            direct.append(a)
+        return HttpResponse(json.dumps({'data': direct}))
 
 
 # 获取邮件账号
@@ -252,6 +253,7 @@ def get_server_proxy_info(request):
     return render_to_response('server_proxy_info.html', {'server_info_list': server_info_list})
 
 ####################################################inception表结构审核####################################################
+# inception初始化页面
 @auth
 def inception(request):
     server_name_list = models.DbProxyInfo.objects.all().values('server_name').exclude(server_name__iendswith='b')
